@@ -1,0 +1,348 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --background-color: #ecf0f1;
+    --text-color: #34495e;
+    --panel-background: #ffffff;
+    --border-color: #bdc3c7;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.simulation-area {
+    flex: 1 1 600px;
+}
+
+#simulationCanvas {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.control-panel {
+    flex: 1 1 300px;
+    background-color: var(--panel-background);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.panel-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.beam-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.slider-container.compact {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.slider-container.compact label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+input[type="range"] {
+    width: 100%;
+}
+
+.technique-section, .tumor-shape-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+}
+
+.btn.primary {
+    background-color: var(--secondary-color);
+}
+
+.btn.primary:hover {
+    background-color: #27ae60;
+}
+
+.switch-container {
+    display: flex;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--secondary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.label-text {
+    font-size: 0.9em;
+}
+
+.select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    color: var(--text-color);
+}
+
+.info-panel {
+    margin-top: 10px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.value {
+    font-weight: bold;
+    margin-left: auto;
+}
+
+.treatment-stats {
+    margin-top: 15px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.stat-item {
+    margin-bottom: 10px;
+}
+
+.stat-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+#treatmentTime, #marginValue, #fractionsValue {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.mlc-panel {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+#mlcVisualization {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.collapsible-info-panel {
+    margin-top: 20px;
+}
+
+.info-panel {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.info-header {
+    background-color: #f1f1f1;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-content {
+    padding: 0 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.info-content.active {
+    max-height: 500px;
+}
+
+.toggle-icon::after {
+    content: '\25BC';
+}
+
+.info-header.active .toggle-icon::after {
+    content: '\25B2';
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #777;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+    
+    .panel-section, .beam-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .switch-container {
+        margin-top: 10px;
+    }
+    
+    .technique-section, .tumor-shape-section {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn, .select {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    input[type="range"] {
+        height: 30px;
+    }
+}
+
+.highlight {
+    animation: highlight 0.3s ease-in-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(46, 204, 113, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
