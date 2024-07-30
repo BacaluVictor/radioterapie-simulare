@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulare Tehnici de Radioterapie</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Simulare Tehnici de Radioterapie</h1>
+        </header>
+        <main class="content">
+            <section class="simulation-area">
+                <canvas id="simulationCanvas" width="800" height="600"></canvas>
+            </section>
+            <section class="control-panel">
+                <div class="panel-section">
+                    <button id="treatmentControl" class="btn primary">Start Tratament</button>
+                    <div class="switch-container">
+                        <label class="switch">
+                            <input type="checkbox" id="showDoseDistribution">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="label-text">Afișează Doza</span>
+                    </div>
+                </div>
+                <div class="panel-section beam-controls">
+                    <div class="slider-container compact">
+                        <label for="beamEnergy">Energie: <span id="beamEnergyValue">6 MeV</span></label>
+                        <input type="range" id="beamEnergy" min="1" max="15" value="6" class="slider">
+                    </div>
+                    <div class="slider-container compact">
+                        <label for="beamWidth">Lățime: <span id="beamWidthValue">100 mm</span></label>
+                        <input type="range" id="beamWidth" min="50" max="200" value="100" class="slider">
+                    </div>
+                </div>
+                <div class="panel-section technique-section">
+                    <label for="treatmentTechnique">Tehnică: </label>
+                    <select id="treatmentTechnique" class="select">
+                        <option value="2D">2D</option>
+                        <option value="3D">3D Conformală</option>
+                        <option value="IMRT">IMRT</option>
+                        <option value="VMAT">VMAT</option>
+                        <option value="SRS">SRS</option>
+                        <option value="SBRT">SBRT</option>
+                    </select>
+                </div>
+                <div class="panel-section tumor-shape-section">
+                    <label for="tumorShape">Formă Tumoră: </label>
+                    <select id="tumorShape" class="select">
+                        <option value="round">Rotundă</option>
+                        <option value="irregular">Neregulată</option>
+                    </select>
+                </div>
+                <div class="panel-section">
+                    <button id="mlcControl" class="btn">Ajustare MLC</button>
+                </div>
+                <div id="mlcAdjustmentPanel" class="mlc-panel">
+                    <canvas id="mlcVisualization" width="200" height="100"></canvas>
+                </div>
+                <div class="info-panel">
+                    <div class="info-grid">
+                        <div class="info-item">Unghi: <span id="gantryAngle" class="value">0°</span></div>
+                        <div class="info-item">Câmp: <span id="currentField" class="value">-</span></div>
+                        <div class="info-item">Doză: <span id="accumulatedDose" class="value">0%</span></div>
+                        <div class="info-item">Fracție: <span id="fractionNumber" class="value">0/30</span></div>
+                        <div class="info-item">Status: <span id="beamStatus" class="value">Inactiv</span></div>
+                        <div class="info-item">Tehnică: <span id="treatmentTechniqueInfo" class="value">2D</span></div>
+                    </div>
+                    <div class="treatment-stats">
+                        <div class="stat-item">
+                            <label>Precizie:</label>
+                            <div class="progress-bar" id="precisionBar"></div>
+                        </div>
+                        <div class="stat-item">
+                            <label>Protecție țesut sănătos:</label>
+                            <div class="progress-bar" id="tissueProtectionBar"></div>
+                        </div>
+                        <div class="stat-item">
+                            <label>Timp estimat tratament:</label>
+                            <span id="treatmentTime"></span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Margine:</label>
+                            <span id="marginValue"></span>
+                        </div>
+                        <div class="stat-item">
+                            <label>Fracții:</label>
+                            <span id="fractionsValue"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-info-panel">
+                    <div class="info-panel">
+                        <div class="info-header" onclick="toggleInfo(this)">
+                            <span>Date Clinice</span>
+                            <span class="toggle-icon"></span>
+                        </div>
+                        <div class="info-content" id="clinicalDataContent">
+                            <!-- Conținutul datelor clinice va fi inserat aici -->
+                        </div>
+                    </div>
+                    <div class="info-panel">
+                        <div class="info-header" onclick="toggleInfo(this)">
+                            <span>Date Tehnice</span>
+                            <span class="toggle-icon"></span>
+                        </div>
+                        <div class="info-content" id="technicalDataContent">
+                            <!-- Conținutul datelor tehnice va fi inserat aici -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>Creat de Dr. Bacalu Victor</p>
+        </footer>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
