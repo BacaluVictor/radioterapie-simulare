@@ -55,11 +55,9 @@
                     </select>
                 </div>
                 <div class="panel-section">
-                    <button id="mlcControl" class="btn">Ajustare MLC</button>
+                    <button id="mlcControl" class="btn">Informații MLC</button>
                 </div>
-                <div id="mlcAdjustmentPanel" class="mlc-panel">
-                    <canvas id="mlcVisualization" width="200" height="100"></canvas>
-                </div>
+                <div id="mlcAdjustmentPanel" class="mlc-panel"></div>
                 <div class="info-panel">
                     <div class="info-grid">
                         <div class="info-item">Unghi: <span id="gantryAngle" class="value">0°</span></div>
@@ -94,21 +92,19 @@
                 </div>
                 <div class="collapsible-info-panel">
                     <div class="info-panel">
-                        <div class="info-header" onclick="toggleInfo(this)">
+                        <div class="info-header">
                             <span>Date Clinice</span>
                             <span class="toggle-icon"></span>
                         </div>
                         <div class="info-content" id="clinicalDataContent">
-                            <!-- Conținutul datelor clinice va fi inserat aici -->
                         </div>
                     </div>
                     <div class="info-panel">
-                        <div class="info-header" onclick="toggleInfo(this)">
+                        <div class="info-header">
                             <span>Date Tehnice</span>
                             <span class="toggle-icon"></span>
                         </div>
                         <div class="info-content" id="technicalDataContent">
-                            <!-- Conținutul datelor tehnice va fi inserat aici -->
                         </div>
                     </div>
                 </div>
