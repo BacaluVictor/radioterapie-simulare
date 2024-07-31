@@ -739,19 +739,39 @@ function drawDoseDistribution() {
     ctx.drawImage(currentDoseCanvas, 0, 0);
 }
 
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function scaleScene() {
+    const sceneWidth = 800;
+    const sceneHeight = 600;
+    
+    const scaleX = canvas.width / sceneWidth;
+    const scaleY = canvas.height / sceneHeight;
+    const scale = Math.min(scaleX, scaleY);
+
+    const scaledWidth = sceneWidth * scale;
+    const scaledHeight = sceneHeight * scale;
+
+    const offsetX = (canvas.width - scaledWidth) / 2;
+    const offsetY = (canvas.height - scaledHeight) / 2;
+
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    ctx.scale(scale, scale);
+
     drawAnatomy();
     if (showDoseDistribution) {
         drawDoseDistribution();
     }
-    
     drawGantry(currentAngle);
-    
     if (isBeamOn) {
         drawBeam(currentAngle);
     }
-    
+
+    ctx.restore();
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    scaleScene();
     updateInfo();
     requestAnimationFrame(animate);
 }
@@ -1103,7 +1123,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Funcție pentru salvarea stării simulării (exemplu simplu)
+// Funcție pentru salvarea stării simulării
 function saveSimulationState() {
     const state = {
         treatmentTechnique,
@@ -1121,7 +1141,7 @@ function saveSimulationState() {
     console.log('Starea simulării a fost salvată');
 }
 
-// Funcție pentru încărcarea stării simulării (exemplu simplu)
+// Funcție pentru încărcarea stării simulării
 function loadSimulationState() {
     const savedState = localStorage.getItem('radiotherapySimulationState');
     if (savedState) {
