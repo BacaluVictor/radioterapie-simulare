@@ -18,6 +18,7 @@ let treatmentPaused = false;
 let tumorShape = 'round';
 let doseDistributionCanvas = null;
 let currentDoseCanvas = null;
+let beamRelativePosition = 0;
 
 const structures = {
     tumor: { x: 400, y: 300, radius: 30 },
@@ -417,31 +418,32 @@ function drawBeam(angle) {
     const distanceToIsocenter = Math.sqrt(dx * dx + dy * dy);
 
     let beamWidthPx = beamWidth * 0.5;
+    
+    // Modificăm calculul lungimii fasciculului
+    let beamLength = distanceToIsocenter * (1 + beamRelativePosition);
+    
+    // Limităm lungimea fasciculului pentru a nu depăși gantry-ul în direcția opusă
+    beamLength = Math.min(beamLength, distanceToIsocenter * 2);
 
+    console.log(`Energie: ${beamEnergy}, beamRelativePosition: ${beamRelativePosition}, beamLength: ${beamLength}`);
+
+    // Desenăm fasciculul folosind beamLength
     switch (treatmentTechnique) {
         case '2D':
-            drawRectangularBeam(0, 0, beamWidthPx, distanceToIsocenter, techParams.precision);
+            drawRectangularBeam(0, -distanceToIsocenter, beamWidthPx, beamLength, techParams.precision);
             break;
         case '3D':
-            drawConformalBeam(0, 0, beamWidthPx, distanceToIsocenter, techParams.precision);
+            drawConformalBeam(0, -distanceToIsocenter, beamWidthPx, beamLength, techParams.precision);
             break;
         case 'IMRT':
         case 'VMAT':
-            drawIMRTBeam(0, 0, beamWidthPx, distanceToIsocenter, techParams.precision);
+            drawIMRTBeam(0, -distanceToIsocenter, beamWidthPx, beamLength, techParams.precision);
             break;
         case 'SRS':
         case 'SBRT':
-            drawSRSBeam(0, 0, beamWidthPx, distanceToIsocenter, techParams.precision);
+            drawSRSBeam(0, -distanceToIsocenter, beamWidthPx, beamLength, techParams.precision);
             break;
     }
-
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -distanceToIsocenter);
-    ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)';
-    ctx.stroke();
-    ctx.setLineDash([]);
 
     ctx.restore();
 }
@@ -462,11 +464,11 @@ function drawRectangularBeam(originX, originY, width, length, precision) {
     ctx.beginPath();
     ctx.moveTo(originX - width - edgeVariation, originY);
     ctx.lineTo(originX + width + edgeVariation, originY);
-    ctx.lineTo(originX + width - edgeVariation, -length);
-    ctx.lineTo(originX - width + edgeVariation, -length);
+    ctx.lineTo(originX + width - edgeVariation, originY + length);
+    ctx.lineTo(originX - width + edgeVariation, originY + length);
     ctx.closePath();
 
-    const gradient = ctx.createLinearGradient(originX, originY, originX, -length);
+    const gradient = ctx.createLinearGradient(originX, originY, originX, originY + length);
     gradient.addColorStop(0, getYellowShade(beamEnergy / 15));
     gradient.addColorStop(1, getYellowShade(0.05));
     ctx.fillStyle = gradient;
@@ -483,12 +485,12 @@ function drawConformalBeam(originX, originY, width, length, precision) {
     ctx.beginPath();
     ctx.moveTo(originX - width - edgeVariation, originY);
     ctx.lineTo(originX + width + edgeVariation, originY);
-    ctx.quadraticCurveTo(originX + width / 2, -length / 2, originX + width - edgeVariation, -length);
-    ctx.lineTo(originX - width + edgeVariation, -length);
-    ctx.quadraticCurveTo(originX - width / 2, -length / 2, originX - width - edgeVariation, originY);
+    ctx.quadraticCurveTo(originX + width / 2, originY + length / 2, originX + width - edgeVariation, originY + length);
+    ctx.lineTo(originX - width + edgeVariation, originY + length);
+    ctx.quadraticCurveTo(originX - width / 2, originY + length / 2, originX - width - edgeVariation, originY);
     ctx.closePath();
 
-    const gradient = ctx.createLinearGradient(originX, originY, originX, -length);
+    const gradient = ctx.createLinearGradient(originX, originY, originX, originY + length);
     gradient.addColorStop(0, getYellowShade(beamEnergy / 15, 10));
     gradient.addColorStop(1, getYellowShade(0.05, 10));
     ctx.fillStyle = gradient;
@@ -506,13 +508,13 @@ function drawIMRTBeam(originX, originY, width, length, precision) {
         const segmentWidth = width * (0.5 + Math.random() * 0.5);
         const intensity = Math.random() * 0.7 + 0.3;
         
-        const gradient = ctx.createLinearGradient(originX, originY - i * segmentLength, originX, originY - (i + 1) * segmentLength);
+        const gradient = ctx.createLinearGradient(originX, originY + i * segmentLength, originX, originY + (i + 1) * segmentLength);
         gradient.addColorStop(0, getYellowShade(intensity * beamEnergy / 15, 20));
         gradient.addColorStop(1, getYellowShade(intensity * 0.05, 20));
         ctx.fillStyle = gradient;
 
         ctx.beginPath();
-        ctx.rect(originX - segmentWidth / 2, originY - (i + 1) * segmentLength, segmentWidth, segmentLength);
+        ctx.rect(originX - segmentWidth / 2, originY + i * segmentLength, segmentWidth, segmentLength);
         ctx.fill();
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
         ctx.stroke();
@@ -526,11 +528,11 @@ function drawSRSBeam(originX, originY, width, length, precision) {
     ctx.beginPath();
     ctx.moveTo(originX - maxWidth, originY);
     ctx.lineTo(originX + maxWidth, originY);
-    ctx.lineTo(originX + tumorRadius, -length);
-    ctx.lineTo(originX - tumorRadius, -length);
+    ctx.lineTo(originX + tumorRadius, originY + length);
+    ctx.lineTo(originX - tumorRadius, originY + length);
     ctx.closePath();
 
-    const gradient = ctx.createLinearGradient(originX, originY, originX, -length);
+    const gradient = ctx.createLinearGradient(originX, originY, originX, originY + length);
     gradient.addColorStop(0, getYellowShade(beamEnergy / 15, -10));
     gradient.addColorStop(1, getYellowShade(0.9, -10));
     ctx.fillStyle = gradient;
@@ -542,7 +544,7 @@ function drawSRSBeam(originX, originY, width, length, precision) {
     for (let i = -5; i <= 5; i++) {
         const leafPosition = i * (maxWidth / 5);
         ctx.moveTo(originX + leafPosition, originY);
-        ctx.lineTo(originX + (leafPosition / maxWidth) * tumorRadius, -length);
+        ctx.lineTo(originX + (leafPosition / maxWidth) * tumorRadius, originY + length);
     }
     ctx.stroke();
 }
@@ -1025,6 +1027,17 @@ function toggleInfo(header) {
     }
 }
 
+function updateBeamRelativePosition() {
+    const minEnergy = 1;
+    const maxEnergy = 15;
+    
+    // Ajustăm scala pentru a permite o variație mai mare
+    // Acum, -0.5 va reprezenta fasciculul cel mai scurt, 0 va fi la izocentru, și 0.5 va fi cel mai lung
+    beamRelativePosition = (beamEnergy - minEnergy) / (maxEnergy - minEnergy) - 0.5;
+
+    console.log(`Energie actualizată: ${beamEnergy}, beamRelativePosition: ${beamRelativePosition}`);
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     const treatmentControlButton = document.getElementById('treatmentControl');
@@ -1044,6 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
         beamEnergySlider.addEventListener('input', function() {
             beamEnergy = parseInt(this.value);
             document.getElementById('beamEnergyValue').textContent = `${beamEnergy} MeV`;
+            updateBeamRelativePosition();
         });
     }
 
@@ -1085,6 +1099,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateInfo();
     updateMLCControlButton();
     updateClinicalTechnicalData(treatmentTechnique);
+    updateBeamRelativePosition();
 });
 
 // Funcție pentru a rezeta simularea
@@ -1175,4 +1190,4 @@ document.body.appendChild(saveButton);
 const loadButton = document.createElement('button');
 loadButton.textContent = 'Încarcă Starea';
 loadButton.addEventListener('click', loadSimulationState);
-document.body.appendChild(loadButton);
+document.body.appendChild(loadButton); 
