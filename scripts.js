@@ -61,7 +61,7 @@ const treatmentTechniques = {
         fractions: 30
     },
     'VMAT': {
-        fields: Array.from({length: 360}, (_, i) => i),
+        fields: Array.from({ length: 360 }, (_, i) => i),
         beamShape: 'modulated',
         margin: 3,
         precision: 85,
@@ -71,7 +71,7 @@ const treatmentTechniques = {
         fractions: 30
     },
     'SRS': {
-        fields: Array.from({length: 36}, (_, i) => i * 10),
+        fields: Array.from({ length: 36 }, (_, i) => i * 10),
         beamShape: 'convergent',
         margin: 1,
         precision: 95,
@@ -81,7 +81,7 @@ const treatmentTechniques = {
         fractions: 1
     },
     'SBRT': {
-        fields: Array.from({length: 36}, (_, i) => i * 10),
+        fields: Array.from({ length: 36 }, (_, i) => i * 10),
         beamShape: 'convergent',
         margin: 2,
         precision: 95,
@@ -210,8 +210,8 @@ function drawStandardAnatomy() {
     ctx.stroke();
 
     ctx.fillStyle = '#e0e0e0';
-    ctx.fillRect(structures.spine.x - structures.spine.width / 2, structures.spine.y - structures.spine.height / 2, 
-                 structures.spine.width, structures.spine.height);
+    ctx.fillRect(structures.spine.x - structures.spine.width / 2, structures.spine.y - structures.spine.height / 2,
+        structures.spine.width, structures.spine.height);
 
     ctx.fillStyle = '#ffc0cb';
     ctx.beginPath();
@@ -347,7 +347,7 @@ function drawTumor(x, y, radius = structures.tumor.radius) {
     ctx.fillStyle = '#ff4136';
     ctx.strokeStyle = '#85144b';
     ctx.lineWidth = 2;
-    
+
     if (tumorShape === 'round') {
         ctx.beginPath();
         ctx.arc(tumorPosition.x, tumorPosition.y, radius, 0, 2 * Math.PI);
@@ -360,22 +360,22 @@ function drawTumor(x, y, radius = structures.tumor.radius) {
 
 function drawIrregularTumor(x, y, radius) {
     ctx.beginPath();
-    
+
     const angle = 2 * Math.PI / 3;
     const cornerRadius = radius * 0.3;
-    
+
     for (let i = 0; i < 3; i++) {
         const currentAngle = i * angle - Math.PI / 2;
         const nextAngle = (i + 1) * angle - Math.PI / 2;
-        
+
         const point1x = x + (radius - cornerRadius) * Math.cos(currentAngle);
         const point1y = y + (radius - cornerRadius) * Math.sin(currentAngle);
-        
+
         const point2x = x + (radius - cornerRadius) * Math.cos(nextAngle);
         const point2y = y + (radius - cornerRadius) * Math.sin(nextAngle);
-        
+
         ctx.lineTo(point1x, point1y);
-        
+
         ctx.arcTo(
             x + radius * Math.cos(currentAngle + angle / 2),
             y + radius * Math.sin(currentAngle + angle / 2),
@@ -384,7 +384,7 @@ function drawIrregularTumor(x, y, radius) {
             cornerRadius
         );
     }
-    
+
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -418,10 +418,10 @@ function drawBeam(angle) {
     const distanceToIsocenter = Math.sqrt(dx * dx + dy * dy);
 
     let beamWidthPx = beamWidth * 0.5;
-    
+
     // Modificăm calculul lungimii fasciculului
     let beamLength = distanceToIsocenter * (1 + beamRelativePosition);
-    
+
     // Limităm lungimea fasciculului pentru a nu depăși gantry-ul în direcția opusă
     beamLength = Math.min(beamLength, distanceToIsocenter * 2);
 
@@ -507,7 +507,7 @@ function drawIMRTBeam(originX, originY, width, length, precision) {
     for (let i = 0; i < segments; i++) {
         const segmentWidth = width * (0.5 + Math.random() * 0.5);
         const intensity = Math.random() * 0.7 + 0.3;
-        
+
         const gradient = ctx.createLinearGradient(originX, originY + i * segmentLength, originX, originY + (i + 1) * segmentLength);
         gradient.addColorStop(0, getYellowShade(intensity * beamEnergy / 15, 20));
         gradient.addColorStop(1, getYellowShade(intensity * 0.05, 20));
@@ -598,11 +598,11 @@ function drawMLC(mlcParams) {
     ctx.fillStyle = '#404040';
     const leafWidth = parseFloat(mlcParams.leafWidth);
     const leafCount = Math.floor(mlcWidth / leafWidth);
-    
+
     for (let i = 0; i < leafCount; i++) {
         const x = -mlcWidth / 2 + i * leafWidth;
         const randomExtension = Math.random() * (mlcHeight / 2);
-        
+
         ctx.fillRect(x, -gantryRadius - mlcHeight, leafWidth, mlcHeight / 2 + randomExtension);
         ctx.fillRect(x, -gantryRadius - mlcHeight / 2 - randomExtension, leafWidth, mlcHeight / 2 + randomExtension);
     }
@@ -654,7 +654,7 @@ function drawIsodoseLines(ctx, tumorPosition, tumorRadius, maxRadius) {
     const isodoseLines = [0.9, 0.7, 0.5, 0.3];
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
     ctx.lineWidth = 1;
-    
+
     isodoseLines.forEach(isodose => {
         ctx.beginPath();
         for (let angle = 0; angle < 2 * Math.PI; angle += 0.1) {
@@ -723,10 +723,10 @@ function getColorForDose(dose) {
 
     for (let i = 1; i < colorStops.length; i++) {
         if (dose <= colorStops[i].value) {
-            const t = (dose - colorStops[i-1].value) / (colorStops[i].value - colorStops[i-1].value);
-            const r = Math.round(colorStops[i-1].color[0] + t * (colorStops[i].color[0] - colorStops[i-1].color[0]));
-            const g = Math.round(colorStops[i-1].color[1] + t * (colorStops[i].color[1] - colorStops[i-1].color[1]));
-            const b = Math.round(colorStops[i-1].color[2] + t * (colorStops[i].color[2] - colorStops[i-1].color[2]));
+            const t = (dose - colorStops[i - 1].value) / (colorStops[i].value - colorStops[i - 1].value);
+            const r = Math.round(colorStops[i - 1].color[0] + t * (colorStops[i].color[0] - colorStops[i - 1].color[0]));
+            const g = Math.round(colorStops[i - 1].color[1] + t * (colorStops[i].color[1] - colorStops[i - 1].color[1]));
+            const b = Math.round(colorStops[i - 1].color[2] + t * (colorStops[i].color[2] - colorStops[i - 1].color[2]));
             return `rgba(${r}, ${g}, ${b}, 0.7)`;
         }
     }
@@ -744,7 +744,7 @@ function drawDoseDistribution() {
 function scaleScene() {
     const sceneWidth = 800;
     const sceneHeight = 600;
-    
+
     const scaleX = canvas.width / sceneWidth;
     const scaleY = canvas.height / sceneHeight;
     const scale = Math.min(scaleX, scaleY);
@@ -827,7 +827,7 @@ function runTreatmentCycle() {
                 }
 
                 currentAngle = (currentAngle + 1) % 360;
-                
+
                 if (currentAngle === 0) {
                     clearInterval(rotationInterval);
                     isBeamOn = false;
@@ -843,7 +843,7 @@ function runTreatmentCycle() {
         } else if (fieldIndex < techParams.fields.length) {
             targetAngle = techParams.fields[fieldIndex];
             currentField = getFieldName(targetAngle);
-            
+
             const rotationInterval = setInterval(() => {
                 if (treatmentPaused) {
                     clearInterval(rotationInterval);
@@ -968,7 +968,7 @@ function updateTumorShape() {
 function updateMLCControlButton() {
     const mlcButton = document.getElementById('mlcControl');
     const techParams = treatmentTechniques[treatmentTechnique];
-    
+
     mlcButton.disabled = false;
     mlcButton.textContent = 'Informații MLC';
     mlcButton.addEventListener('click', toggleMLCInfo);
@@ -977,7 +977,7 @@ function updateMLCControlButton() {
 function toggleMLCInfo() {
     const panel = document.getElementById('mlcAdjustmentPanel');
     const techParams = treatmentTechniques[treatmentTechnique];
-    
+
     if (panel.style.display === 'none' || panel.style.display === '') {
         let content = '';
         if (techParams.mlc) {
@@ -1001,7 +1001,7 @@ function toggleMLCInfo() {
 
 function updateClinicalTechnicalData(technique) {
     const data = clinicalTechnicalData[technique];
-    
+
     let clinicalContent = '<h3>Date Clinice</h3>';
     for (const [key, value] of Object.entries(data.clinical)) {
         clinicalContent += `<p><strong>${key}:</strong> ${value}</p>`;
@@ -1030,7 +1030,7 @@ function toggleInfo(header) {
 function updateBeamRelativePosition() {
     const minEnergy = 1;
     const maxEnergy = 15;
-    
+
     // Ajustăm scala pentru a permite o variație mai mare
     // Acum, -0.5 va reprezenta fasciculul cel mai scurt, 0 va fi la izocentru, și 0.5 va fi cel mai lung
     beamRelativePosition = (beamEnergy - minEnergy) / (maxEnergy - minEnergy) - 0.5;
@@ -1047,14 +1047,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showDoseCheckbox = document.getElementById('showDoseDistribution');
     if (showDoseCheckbox) {
-        showDoseCheckbox.addEventListener('change', function() {
+        showDoseCheckbox.addEventListener('change', function () {
             showDoseDistribution = this.checked;
+            doseDistributionCanvas = null; // Ensure it updates
         });
     }
 
     const beamEnergySlider = document.getElementById('beamEnergy');
     if (beamEnergySlider) {
-        beamEnergySlider.addEventListener('input', function() {
+        beamEnergySlider.addEventListener('input', function () {
             beamEnergy = parseInt(this.value);
             document.getElementById('beamEnergyValue').textContent = `${beamEnergy} MeV`;
             updateBeamRelativePosition();
@@ -1063,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const beamWidthSlider = document.getElementById('beamWidth');
     if (beamWidthSlider) {
-        beamWidthSlider.addEventListener('input', function() {
+        beamWidthSlider.addEventListener('input', function () {
             beamWidth = parseInt(this.value);
             document.getElementById('beamWidthValue').textContent = `${beamWidth} mm`;
         });
@@ -1071,18 +1072,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const techniqueSelector = document.getElementById('treatmentTechnique');
     if (techniqueSelector) {
-        techniqueSelector.addEventListener('change', function() {
+        techniqueSelector.addEventListener('change', function () {
             treatmentTechnique = this.value;
             updateTechniqueInfo();
             updateClinicalTechnicalData(treatmentTechnique);
-            doseDistributionCanvas = null;
+            doseDistributionCanvas = null; // Ensure it updates
             drawAnatomy();
         });
     }
 
     const tumorShapeSelector = document.getElementById('tumorShape');
     if (tumorShapeSelector) {
-        tumorShapeSelector.addEventListener('change', function() {
+        tumorShapeSelector.addEventListener('change', function () {
             tumorShape = this.value;
             updateTumorShape();
         });
@@ -1090,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const infoHeaders = document.querySelectorAll('.info-header');
     infoHeaders.forEach(header => {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function () {
             toggleInfo(this);
         });
     });
@@ -1124,7 +1125,7 @@ animate();
 
 // Adăugarea unor taste rapide pentru controlul simulării
 document.addEventListener('keydown', (event) => {
-    switch(event.key) {
+    switch (event.key) {
         case ' ':
             toggleTreatment();
             break;
@@ -1134,6 +1135,7 @@ document.addEventListener('keydown', (event) => {
         case 'd':
             showDoseDistribution = !showDoseDistribution;
             document.getElementById('showDoseDistribution').checked = showDoseDistribution;
+            doseDistributionCanvas = null; // Ensure it updates
             break;
     }
 });
@@ -1190,4 +1192,4 @@ document.body.appendChild(saveButton);
 const loadButton = document.createElement('button');
 loadButton.textContent = 'Încarcă Starea';
 loadButton.addEventListener('click', loadSimulationState);
-document.body.appendChild(loadButton); 
+document.body.appendChild(loadButton);
